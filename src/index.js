@@ -6,57 +6,21 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import {ImprovedNoise} from 'https://unpkg.com/three/examples/jsm/math/ImprovedNoise.js';
+import { AnaglyphEffect } from 'three/addons/effects/AnaglyphEffect.js';
 
 THREE.ColorManagement.enabled = false; 
 
-let camera, controls, scene, renderer,light1, light2, light3,ambientLight,raycaster,intersects,plane;
+let camera, controls, scene, renderer,light1, light2, light3,light4,light5,ambientLight,raycaster,intersects,plane;
 let sprite;
-let group;
 let composer;
+let effect;
 const mouse = new THREE.Vector2();
+let group = new THREE.Group();
 
 
 
 init()
 animate();
-
-// const ENTIRE_SCENE = 0, BLOOM_SCENE = 1;
-// const bloomLayer = new THREE.Layers();
-// 			bloomLayer.set( BLOOM_SCENE );
-
-// 			const params = {
-// 				exposure: 1,
-// 				bloomStrength: 5,
-// 				bloomThreshold: 0,
-// 				bloomRadius: 0,
-// 				scene: 'Scene with Glow'
-// 			};
-// const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
-// 			bloomPass.threshold = params.bloomThreshold;
-// 			bloomPass.strength = params.bloomStrength;
-// 			bloomPass.radius = params.bloomRadius;
-
-// const bloomComposer = new EffectComposer( renderer );
-// 			bloomComposer.renderToScreen = false;
-// 			bloomComposer.addPass( renderScene );
-// 			bloomComposer.addPass( bloomPass );
-
-//             const finalPass = new ShaderPass(
-// 				new THREE.ShaderMaterial( {
-// 					uniforms: {
-// 						baseTexture: { value: null },
-// 						bloomTexture: { value: bloomComposer.renderTarget2.texture }
-// 					},
-// 					vertexShader: document.getElementById( 'vertexshader' ).textContent,
-// 					fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
-// 					defines: {}
-// 				} ), 'baseTexture'
-// 			);
-// 			finalPass.needsSwap = true;
-
-// 			const finalComposer = new EffectComposer( renderer );
-// 			finalComposer.addPass( renderScene );
-// 			finalComposer.addPass( finalPass );
 
 
 
@@ -68,9 +32,12 @@ async function init() {
     initRaycaster();
     loadRenderer();	
 
-    initSprite(100,'images/dick1.png',"https://www.xvideos.com/");
-    initSprite(100,'images/dick2.png',"https://cn.pornhub.com/");
-    initSprite(100,'images/walk.png',"https://cdosea.org/#video/i");
+    initSprite(20,'images/dick1.png',"https://www.xvideos.com/");
+    initSprite(20,'images/dick2.png',"https://pornhub.com/");
+    initSprite(20,'images/walk.png',"https://cdosea.org/#video/i");
+    initSprite(20,'images/Imhof.png','https://www.instagram.com/anne_imhof/?hl=en');
+    initSprite(20,'images/tentacle.png','https://www.instagram.com/p/CsrPA3vp5cL/');
+    initSprite(20,'images/crazy.png',"https://hackertyper.com/");
 	// camera
 	initCamera();
 
@@ -79,6 +46,22 @@ async function init() {
 
 	// lights
     lights();
+
+    postprocess();
+
+    // const geometry = new THREE.SphereGeometry( 5, 64, 32 );
+
+	// 				const material = new THREE.MeshStandardMaterial( {
+	// 					color: 0xffffff,
+	// 					metalness: 0,
+	// 					roughness: 0,
+	// 					emissive: 100
+	// 				} );
+	// 				// mesh
+	// 				let mesh = new THREE.Mesh( geometry, material );
+    //                 mesh.position.set(10,0,0);
+	// 				scene.add( mesh );
+    callFX();
 
     document.addEventListener( 'mouseup', onDocumentMouseUp );
 
@@ -96,13 +79,17 @@ function animate() {
 	light1.position.y = Math.cos( time * 3 ) * 10;
 	light1.position.z = Math.cos( time * 2 ) * 7;
 
-	light2.position.x = Math.cos( time * 0.3 ) * 6;
-	light2.position.y = Math.sin( time * 0.9 ) * 4;
-	light2.position.z = Math.sin( time * 0.7 ) * 6;
+	light2.position.x = Math.cos( time * 0.01 ) * 50;
+	light2.position.y = Math.sin( time * 0.2 ) * 4;
+	light2.position.z = Math.sin( time * 0.07 ) * 6;
 
 	light3.position.x = Math.sin( time * 3 ) * -9;
 	light3.position.y = Math.cos( time * 3 ) * -4;
 	light3.position.z = Math.sin( time * 2 ) * -6;
+
+    light4.position.x = Math.sin( time * 5 ) * -20;
+	light4.position.y = Math.cos( time * 3 ) * -4;
+	light4.position.z = Math.sin( time * 5 ) * -6;
     
     //sprite
     group.rotation.x =  new ImprovedNoise().noise(0,0,time*.1)*3*Math.sin(time*0.5);
@@ -113,7 +100,8 @@ function animate() {
     CinematicParam(Math.abs(Math.exp(Math.sin(time*2),0.5))*0.75+18,Math.abs(Math.exp(Math.sin(time*5),500))*8+12);
     
     //PP
-  
+    
+    composer.render();
 
     render();
 }
@@ -140,64 +128,68 @@ function onDocumentMouseUp( event ) {
 
     intersects = raycaster.intersectObjects( scene.children );
     if(intersects[0]!=undefined){
-        if (intersects.length > 0 & intersects[0].object.name!="Minecraft_2") {
+        if (intersects.length > 0 & intersects[0].object.name!="SpaceShip1") {
             console.log(intersects[0].object);
             window.open(intersects[0].object.link);
         }
 
-        if(intersects[0].object.name=="Minecraft_2"){
-            // window.open(intersects[0].object.userData.link);
-            window.open("https://www.instagram.com/xtrux_official/");
-            // window.open("https://www.suhuiyu.com/");
-        }
+        if(intersects[0].object.name=="SpaceShip1"){
+            window.open(intersects[0].object.userData.link);
+            }
     }
 }
 
 
 async function loadModel(){
+    let m = new THREE.MeshStandardMaterial( {
+        color: 0,
+        roughness: 0,
+        metalness: 1,
+        side: THREE.DoubleSide
+
+    } );
+
     const modelContainer = new THREE.Group();
     scene.add(modelContainer);
     const models = [
         {
-          gltf: "models/gltf/minecraft_online.glb",
-          link: "https://www.instagram.com/submarine_gallery",
+          gltf: "models/gltf/online.glb",
+          link: "https://www.instagram.com/xtrux_official",
           position: [0, 0, 0],
-          scale: 0.5,
+          scale: 0.25,
+          material: m
         }
       ]
     let loader = new GLTFLoader();
     models.forEach(modelDetails => {
     const { gltf, scale, position, link } = modelDetails;
+
     loader.load(gltf, ({ scene }) => {
     scene.traverse(child => {
     child.userData.link = link;
         });
     modelContainer.add(scene);
-    scene.scale.set(scale, scale, scale);
+    scene.scale.set(scale,scale,scale);
     scene.position.set(...position);
         });
     });
 }
 
 
-function initSprite(amount=100,path= 'images/walk.png',hyperlink="https://cdosea.org/#video/i"){
-    const textureLoader = new THREE.TextureLoader();
-    textureLoader.load( path, createHUDSprites );
-	const map = textureLoader.load( path );
-	group = new THREE.Group();
+function initSprite(amount=100, path='images/walk.png',hyperlink="https://cdosea.org/#video/i"){
+    
+    
+    const map = new THREE.TextureLoader().load(path );
 	const material = new THREE.SpriteMaterial( { map: map, color: 0xffffff, fog: true } );
 	for ( let a = 0; a < amount; a ++ ) {
 	    sprite = new THREE.Sprite( material );
+        sprite.center.set( 0.0, 1.0 );
+        // sprite.scale.set( 1, 1, 1 );
 		sprite.position.x = Math.random() * 400 -200;
         sprite.position.y = Math.random() * 400-200 ;
         sprite.position.z = Math.random()* 800 -400;
         sprite.scale.x=16*3;
         sprite.scale.y=9*3;
-        // sprite.size = THREE.Vector2(30,40);
-        // sprite.scale.normalize();
-        // sprite.scale.multiplyScalar(50);
-		// sprite.position.normalize();
-		// sprite.position.multiplyScalar( 30 );
         sprite.link=hyperlink;
 		group.add( sprite );
 		}
@@ -205,23 +197,22 @@ function initSprite(amount=100,path= 'images/walk.png',hyperlink="https://cdosea
 }
 
 
-function createHUDSprites( texture ) {
-    const material = new THREE.SpriteMaterial( { map: texture } );
-    const width = material.map.image.width;
-    const height = material.map.image.height;
-    sprite = new THREE.Sprite( material );
-    sprite.center.set( 0.0, 1.0 );
-    sprite.scale.set( 1, 1, 1 );
-    // updateHUDSprites();
-}
+// function createHUDSprites( texture ) {
+//     // const material = new THREE.SpriteMaterial( { map: texture } );
+//     // const width = material.map.image.width;
+//     // const height = material.map.image.height;
+//     // sprite = new THREE.Sprite( material );
+//     // sprite.center.set( 0.0, 1.0 );
+//     // sprite.scale.set( 1, 1, 1 );
+//     // updateHUDSprites();
+// }
 
 
-function updateHUDSprites() {
-    const width = window.innerWidth / 2;
-    const height = window.innerHeight / 2;
-
-    sprite.position.set( - width, height, 1 ); // top left
-}
+// function updateHUDSprites() {
+//     const width = window.innerWidth / 2;
+//     const height = window.innerHeight / 2;
+//     sprite.position.set( - width, height, 1 ); // top left
+// }
 
 
 function initRaycaster(){
@@ -233,6 +224,8 @@ function loadRenderer(){
     renderer = new THREE.WebGLRenderer( { antialias: true } );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
+				renderer.toneMapping = THREE.ReinhardToneMapping;
 	document.body.appendChild( renderer.domElement );
 }
 
@@ -294,10 +287,35 @@ function CinematicParam(focalLength=20,fstop=15){
 
 
 function postprocess(){
-    
+    const renderScene = new RenderPass( scene, camera );
+    const params = {
+        exposure: 1,
+        bloomStrength: 1500000,
+        bloomThreshold: 0,
+        bloomRadius: 1
+    };
+	const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+	bloomPass.threshold = params.bloomThreshold;
+	bloomPass.strength = params.bloomStrength;
+	bloomPass.radius = params.bloomRadius;
+
+	composer = new EffectComposer( renderer );
+	composer.addPass( renderScene );
+	composer.addPass( bloomPass );
+
+    renderer.toneMappingExposure = Math.pow( params.exposure, 4.0 );
+    bloomPass.threshold = Number( params.bloomStrength );
+    bloomPass.strength = Number( params.bloomThreshold );
+    bloomPass.radius = Number( params.bloomRadius );
+
 }
 
-
+function callFX(){
+    const width = window.innerWidth || 2;
+	const height = window.innerHeight || 2;
+    effect = new AnaglyphEffect( renderer );
+	effect.setSize( width, height );
+}
 function initControls(){
     controls = new OrbitControls( camera, renderer.domElement );
 	controls.listenToKeyEvents( window ); // optional
@@ -314,16 +332,23 @@ function initControls(){
 
 
 function lights(){
-    light1 = new THREE.PointLight( new THREE.Color("rgb(255, 255, 255)"), 3, 50 );
+    light1 = new THREE.PointLight( new THREE.Color("rgb(255, 255, 255)"), 7, 10 );
 	scene.add( light1 );
 
-	light2 = new THREE.PointLight( new THREE.Color("rgb(255, 0, 0)"), 10, 100 );
+	light2 = new THREE.PointLight( new THREE.Color("rgb(255, 0, 0)"), 15, 10 );
 	scene.add( light2 );
 
-	light3 = new THREE.PointLight( new THREE.Color("rgb(255, 255, 255)"), 3, 50 );
+	light3 = new THREE.PointLight( new THREE.Color("rgb(255, 255, 255)"), 7, 10 );
 	scene.add( light3 );
 
-	ambientLight = new THREE.AmbientLight( new THREE.Color("rgb(255, 30, 30)"),5);
+    light4 = new THREE.PointLight( new THREE.Color("rgb(255, 0, 0)"), 5, 80 );
+	scene.add( light4 );
+
+    light5 = new THREE.SpotLight( new THREE.Color("rgb(255, 255, 255)"), 12, 20);
+    light5.position.set(0,15,0);
+	scene.add( light5 );
+
+	ambientLight = new THREE.AmbientLight( new THREE.Color("rgb(255, 30, 0)"),5);
 	scene.add( ambientLight );
 }
 
@@ -333,8 +358,9 @@ function render() {
         camera.renderCinematic( scene, renderer );
     } else {
         scene.overrideMaterial = null;
-        renderer.clear();
-        renderer.render( scene, camera );
-
+        // renderer.clear();
+        // renderer.render( scene, camera );
+        
     }
+    // effect.render( scene, camera );
 }
