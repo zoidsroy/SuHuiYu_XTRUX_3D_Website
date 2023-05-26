@@ -2,21 +2,34 @@
   <head>
     <title>The Futurism Memorial Hall Taipei</title>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-      }
-	    </style>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="css/main.css">
   </head>
-  
   <body>
-
-	
-    <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+    <audio loop id="music" preload="auto" style="display: none">
+      <source src="audio/230526.wav" type="audio/SupaLiJian.wav">
+    </audio>
+    
+    <audio loop id="pointMusic1" preload="auto" style="display: none">
+          <source src="audio/SupaLiJian.wav" type="audio/SupaLiJian.wav">
+    </audio>
+    
+    <audio loop id="pointMusic2" preload="auto" style="display: none">
+      <source src="audio/airplane.wav" type="audio/airplane.wav">
+    </audio>
+    
+    <audio loop id="pointMusic" preload="auto" style="display: none">
+    <source src="audio/military-battle.mp3" type="audio/military-battle.mp3">
+    </audio>
+    
+    <div id="overlay">
+        <button id="startButton">Hello World</button>
+    </div>
+    <div id="container"></div>
+   
+  <!-- Import maps polyfill -->
+	<!-- Remove this when import maps will be widely supported -->
+  <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
     <script type="importmap">
       {
         "imports": {
@@ -25,9 +38,6 @@
         }
       }
     </script>
-	<!-- <script type="module" src="src/background.js"></script> -->
-    <script type="module" src="src/index.js">
-	
-    </script>
+    <script type="module" src="src/index.js"></script>
   </body>
 </html>

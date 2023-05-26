@@ -7,6 +7,8 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import {ImprovedNoise} from 'https://unpkg.com/three/examples/jsm/math/ImprovedNoise.js';
 import { AnaglyphEffect } from 'three/addons/effects/AnaglyphEffect.js';
+import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+
 
 THREE.ColorManagement.enabled = false; 
 
@@ -16,31 +18,41 @@ let composer;
 let effect;
 const mouse = new THREE.Vector2();
 let group = new THREE.Group();
+let listener = new THREE.AudioListener();
 
+const startButton = document.getElementById( 'startButton' );
+		startButton.addEventListener( 'click', init );
 
-
-init()
-animate();
+// animate();
 
 
 
 async function init() {	
 	scene = new THREE.Scene();
-    scene.background = new THREE.Color(0,255,0);
+
+    const overlay = document.getElementById( 'overlay' );
+	overlay.remove();
+    const container = document.getElementById( 'container' );
+
+    // scene.background = new THREE.Color(0,255,0);
+    initSkybox();
     loadModel();
 	// addPlane(100);
     initRaycaster();
     loadRenderer();	
 
-    initSprite(20,'images/dick1.png',"https://www.xvideos.com/");
-    initSprite(20,'images/dick2.png',"https://pornhub.com/");
     initSprite(20,'images/walk.png',"https://cdosea.org/#video/i");
-    initSprite(20,'images/Imhof.png','https://www.instagram.com/anne_imhof/?hl=en');
     initSprite(20,'images/tentacle.png','https://www.instagram.com/p/CsrPA3vp5cL/');
-    initSprite(20,'images/crazy.png',"https://hackertyper.com/");
+    initSprite(20,'images/crazy.png',"https://www.instagram.com/suhuiyu1976/");
+    initSprite(20,'images/still 001.png',"https://www.instagram.com/suhuiyu1976/");
+    initSprite(20,'images/still 002.png',"https://www.instagram.com/suhuiyu1976/");
 	// camera
 	initCamera();
-
+    //audio
+    initGlobalAudio();
+    initPointAudio1();
+    initPointAudio2();
+    initPointAudio3();
 	// controls
 	initControls();
 
@@ -49,23 +61,12 @@ async function init() {
 
     postprocess();
 
-    // const geometry = new THREE.SphereGeometry( 5, 64, 32 );
-
-	// 				const material = new THREE.MeshStandardMaterial( {
-	// 					color: 0xffffff,
-	// 					metalness: 0,
-	// 					roughness: 0,
-	// 					emissive: 100
-	// 				} );
-	// 				// mesh
-	// 				let mesh = new THREE.Mesh( geometry, material );
-    //                 mesh.position.set(10,0,0);
-	// 				scene.add( mesh );
     callFX();
 
     document.addEventListener( 'mouseup', onDocumentMouseUp );
 
 	window.addEventListener( 'resize', onWindowResize );
+    animate();
 }
 
 
@@ -100,7 +101,6 @@ function animate() {
     CinematicParam(Math.abs(Math.exp(Math.sin(time*2),0.5))*0.75+18,Math.abs(Math.exp(Math.sin(time*5),500))*8+12);
     
     //PP
-    
     composer.render();
 
     render();
@@ -137,6 +137,17 @@ function onDocumentMouseUp( event ) {
             window.open(intersects[0].object.userData.link);
             }
     }
+}
+
+function initSkybox(){
+    new RGBELoader()
+    .setPath( 'images/' )
+    .load( 'sky.hdr', function ( texture ) {
+
+        texture.mapping = THREE.EquirectangularReflectionMapping;
+        scene.background = texture;
+        scene.environment = texture;
+    } );
 }
 
 
@@ -328,6 +339,81 @@ function initControls(){
 	controls.maxDistance = 10;
 
 	controls.maxPolarAngle = Math.PI;
+}
+
+function initGlobalAudio(path){
+    const audioElement = document.getElementById( 'music' );
+			audioElement.play();
+    const sound = new THREE.Audio( listener );
+    camera.add( listener );
+    const audioLoader = new THREE.AudioLoader();
+    audioLoader.load( path='audio/230526.wav', function( buffer ) {
+	sound.setBuffer( buffer );
+	sound.setLoop( true );
+	sound.setVolume( 1 );
+    sound.play();
+
+});
+}
+
+
+function initPointAudio1(){
+    const audioElement = document.getElementById( 'point1Music' );
+			// audioElement.play();
+ const sound = new THREE.PositionalAudio( listener );
+    camera.add( listener );
+    const audioLoader = new THREE.AudioLoader();
+    audioLoader.load( 'audio/SupaLiJian.wav', function( buffer ) {
+	sound.setBuffer( buffer );
+	sound.setLoop( true );
+	sound.setVolume( 2 );
+	sound.setRefDistance( 15 );
+	sound.play();
+});
+const point = new THREE.Object3D();
+scene.add(point);
+point.position.set(20,20,20);
+point.add(sound);
+}
+
+
+function initPointAudio2(){
+    const audioElement = document.getElementById( 'point2Music' );
+			// audioElement.play();
+ const sound = new THREE.PositionalAudio( listener );
+    camera.add( listener );
+    const audioLoader = new THREE.AudioLoader();
+    audioLoader.load( 'audio/airplane.wav', function( buffer ) {
+	sound.setBuffer( buffer );
+	sound.setLoop( true );
+	sound.setVolume( 5 );
+	sound.setRefDistance( 5 );
+	sound.play();
+});
+const point = new THREE.Object3D();
+scene.add(point);
+point.position.set(-70,60,-70);
+point.add(sound);
+}
+
+
+function initPointAudio3(){
+    const audioElement = document.getElementById( 'point3Music' );
+			// audioElement.play();
+ const sound = new THREE.PositionalAudio( listener );
+    camera.add( listener );
+    const audioLoader = new THREE.AudioLoader();
+    audioLoader.load( 'audio/military-battle.mp3', function( buffer ) {
+	sound.setBuffer( buffer );
+	sound.setLoop( true );
+	sound.setVolume( 3);
+	sound.setRefDistance( 5 );
+	sound.play();
+});
+const point = new THREE.Object3D();
+scene.add(point);
+point.position.set(-40,-40,-40);
+point.add(sound);
 }
 
 
