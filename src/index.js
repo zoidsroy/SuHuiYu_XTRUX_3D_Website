@@ -44,7 +44,7 @@ async function init() {
     initSprite(20,'images/walk.png',"https://cdosea.org/#video/i");
     initSprite(20,'images/tentacle.png','https://www.instagram.com/p/CsrPA3vp5cL/');
     initSprite(20,'images/crazy.png',"https://www.instagram.com/suhuiyu1976/");
-    initSprite(20,'images/still 001.png',"https://www.instagram.com/suhuiyu1976/");
+    initSprite(20,'images/still 001.png',"https://www.youtube.com/watch?v=JiHiUGf4AD8&t=2311s");
     initSprite(20,'images/still 002.png',"https://www.instagram.com/suhuiyu1976/");
 	// camera
 	initCamera();
@@ -52,7 +52,6 @@ async function init() {
     initGlobalAudio();
     initPointAudio1();
     initPointAudio2();
-    initPointAudio3();
 	// controls
 	initControls();
 
@@ -61,7 +60,7 @@ async function init() {
 
     postprocess();
 
-    callFX();
+    // callFX();
 
     document.addEventListener( 'mouseup', onDocumentMouseUp );
 
@@ -103,7 +102,7 @@ function animate() {
     //PP
     composer.render();
 
-    render();
+    // render();
 }
  
 
@@ -111,8 +110,8 @@ function onWindowResize() {
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
 	// scene.texture.setSize(window.innerWidth, window.innerHeight)
+    renderer.setSize( window.innerWidth, window.innerHeight );
     composer.setSize( window.innerWidth, window.innerHeight );
-	renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
 
@@ -156,8 +155,8 @@ async function loadModel(){
         color: 0,
         roughness: 0,
         metalness: 1,
+        emissive:10,
         side: THREE.DoubleSide
-
     } );
 
     const modelContainer = new THREE.Group();
@@ -187,11 +186,9 @@ async function loadModel(){
 }
 
 
-function initSprite(amount=100, path='images/walk.png',hyperlink="https://cdosea.org/#video/i"){
-    
-    
+function initSprite(amount=100, path='images/walk.png',hyperlink="https://cdosea.org/#video/i"){   
     const map = new THREE.TextureLoader().load(path );
-	const material = new THREE.SpriteMaterial( { map: map, color: 0xffffff, fog: true } );
+	const material = new THREE.SpriteMaterial( { map: map, color: new THREE.Color("rgb(90, 90, 90)"), fog: true} );
 	for ( let a = 0; a < amount; a ++ ) {
 	    sprite = new THREE.Sprite( material );
         sprite.center.set( 0.0, 1.0 );
@@ -301,31 +298,28 @@ function postprocess(){
     const renderScene = new RenderPass( scene, camera );
     const params = {
         exposure: 1,
-        bloomStrength: 1500000,
-        bloomThreshold: 0,
-        bloomRadius: 1
+        bloomStrength: 1,
+        bloomThreshold: 0.,
+        bloomRadius: 0.5
     };
 	const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
 	bloomPass.threshold = params.bloomThreshold;
 	bloomPass.strength = params.bloomStrength;
 	bloomPass.radius = params.bloomRadius;
-
+    
 	composer = new EffectComposer( renderer );
 	composer.addPass( renderScene );
 	composer.addPass( bloomPass );
-
     renderer.toneMappingExposure = Math.pow( params.exposure, 4.0 );
-    bloomPass.threshold = Number( params.bloomStrength );
-    bloomPass.strength = Number( params.bloomThreshold );
-    bloomPass.radius = Number( params.bloomRadius );
+
 
 }
 
 function callFX(){
-    const width = window.innerWidth || 2;
-	const height = window.innerHeight || 2;
-    effect = new AnaglyphEffect( renderer );
-	effect.setSize( width, height );
+    // const width = window.innerWidth || 2;
+	// const height = window.innerHeight || 2;
+    // effect = new AnaglyphEffect( renderer );
+	// effect.setSize( width, height );
 }
 function initControls(){
     controls = new OrbitControls( camera, renderer.domElement );
@@ -347,7 +341,7 @@ function initGlobalAudio(path){
     const sound = new THREE.Audio( listener );
     camera.add( listener );
     const audioLoader = new THREE.AudioLoader();
-    audioLoader.load( path='audio/230526.wav', function( buffer ) {
+    audioLoader.load( path='audio/230526.mp3', function( buffer ) {
 	sound.setBuffer( buffer );
 	sound.setLoop( true );
 	sound.setVolume( 1 );
@@ -363,7 +357,7 @@ function initPointAudio1(){
  const sound = new THREE.PositionalAudio( listener );
     camera.add( listener );
     const audioLoader = new THREE.AudioLoader();
-    audioLoader.load( 'audio/SupaLiJian.wav', function( buffer ) {
+    audioLoader.load( 'audio/SupaLiJian.mp3', function( buffer ) {
 	sound.setBuffer( buffer );
 	sound.setLoop( true );
 	sound.setVolume( 2 );
@@ -383,54 +377,34 @@ function initPointAudio2(){
  const sound = new THREE.PositionalAudio( listener );
     camera.add( listener );
     const audioLoader = new THREE.AudioLoader();
-    audioLoader.load( 'audio/airplane.wav', function( buffer ) {
+    audioLoader.load( 'audio/airplane.mp3', function( buffer ) {
 	sound.setBuffer( buffer );
 	sound.setLoop( true );
-	sound.setVolume( 5 );
+	sound.setVolume( 2 );
 	sound.setRefDistance( 5 );
 	sound.play();
 });
 const point = new THREE.Object3D();
 scene.add(point);
-point.position.set(-70,60,-70);
-point.add(sound);
-}
-
-
-function initPointAudio3(){
-    const audioElement = document.getElementById( 'point3Music' );
-			// audioElement.play();
- const sound = new THREE.PositionalAudio( listener );
-    camera.add( listener );
-    const audioLoader = new THREE.AudioLoader();
-    audioLoader.load( 'audio/military-battle.mp3', function( buffer ) {
-	sound.setBuffer( buffer );
-	sound.setLoop( true );
-	sound.setVolume( 3);
-	sound.setRefDistance( 5 );
-	sound.play();
-});
-const point = new THREE.Object3D();
-scene.add(point);
-point.position.set(-40,-40,-40);
+point.position.set(-20,-20,-20);
 point.add(sound);
 }
 
 
 function lights(){
-    light1 = new THREE.PointLight( new THREE.Color("rgb(255, 255, 255)"), 7, 10 );
+    light1 = new THREE.PointLight( new THREE.Color("rgb(255, 255, 255)"), 70, 5 );
 	scene.add( light1 );
 
-	light2 = new THREE.PointLight( new THREE.Color("rgb(255, 0, 0)"), 15, 10 );
+	light2 = new THREE.PointLight( new THREE.Color("rgb(255, 0, 0)"), 10, 10 );
 	scene.add( light2 );
 
-	light3 = new THREE.PointLight( new THREE.Color("rgb(255, 255, 255)"), 7, 10 );
+	light3 = new THREE.PointLight( new THREE.Color("rgb(255, 255, 255)"), 70, 5 );
 	scene.add( light3 );
 
-    light4 = new THREE.PointLight( new THREE.Color("rgb(255, 0, 0)"), 5, 80 );
+    light4 = new THREE.PointLight( new THREE.Color("rgb(255, 0, 0)"), 20, 30 );
 	scene.add( light4 );
 
-    light5 = new THREE.SpotLight( new THREE.Color("rgb(255, 255, 255)"), 12, 20);
+    light5 = new THREE.SpotLight( new THREE.Color("rgb(255, 255, 255)"), 24, 20);
     light5.position.set(0,15,0);
 	scene.add( light5 );
 
