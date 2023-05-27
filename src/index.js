@@ -41,11 +41,12 @@ async function init() {
     initRaycaster();
     loadRenderer();	
 
-    initSprite(20,'images/walk.png',"https://cdosea.org/#video/i");
-    initSprite(20,'images/tentacle.png','https://www.instagram.com/p/CsrPA3vp5cL/');
-    initSprite(20,'images/crazy.png',"https://www.instagram.com/suhuiyu1976/");
-    initSprite(20,'images/still 001.png',"https://www.youtube.com/watch?v=JiHiUGf4AD8&t=2311s");
-    initSprite(20,'images/still 002.png',"https://www.instagram.com/suhuiyu1976/");
+    initSprite(20,'images/walk.png',"https://cdosea.org/#video/i",16,9);
+    initSprite(20,'images/tentacle.png','https://www.instagram.com/p/CsrPA3vp5cL/',16,9);
+    initSprite(20,'images/crazy.png',"https://www.instagram.com/suhuiyu1976/",16,16);
+    initSprite(20,'images/still 001.png',"https://www.youtube.com/watch?v=JiHiUGf4AD8&t=2311s",16,9);
+    initSprite(20,'images/still 002.png',"https://www.instagram.com/suhuiyu1976/",16,9);
+    initSprite(20,'images/XTRUX_Logo.png',"https://www.instagram.com/xtrux_official",12,12);
 	// camera
 	initCamera();
     //audio
@@ -80,7 +81,7 @@ function animate() {
 	light1.position.z = Math.cos( time * 2 ) * 7;
 
 	light2.position.x = Math.cos( time * 0.01 ) * 50;
-	light2.position.y = Math.sin( time * 0.2 ) * 4;
+	light2.position.y = Math.sin( time * 0.2 ) * 15;
 	light2.position.z = Math.sin( time * 0.07 ) * 6;
 
 	light3.position.x = Math.sin( time * 3 ) * -9;
@@ -88,7 +89,7 @@ function animate() {
 	light3.position.z = Math.sin( time * 2 ) * -6;
 
     light4.position.x = Math.sin( time * 5 ) * -20;
-	light4.position.y = Math.cos( time * 3 ) * -4;
+	light4.position.y = Math.cos( time * 3 ) * -40;
 	light4.position.z = Math.sin( time * 5 ) * -6;
     
     //sprite
@@ -127,12 +128,12 @@ function onDocumentMouseUp( event ) {
 
     intersects = raycaster.intersectObjects( scene.children );
     if(intersects[0]!=undefined){
-        if (intersects.length > 0 & intersects[0].object.name!="SpaceShip1") {
+        if (intersects.length > 0 & intersects[0].object.name!="SpaceShip1001") {
             console.log(intersects[0].object);
             window.open(intersects[0].object.link);
         }
 
-        if(intersects[0].object.name=="SpaceShip1"){
+        if(intersects[0].object.name=="SpaceShip1001"){
             window.open(intersects[0].object.userData.link);
             }
     }
@@ -186,7 +187,7 @@ async function loadModel(){
 }
 
 
-function initSprite(amount=100, path='images/walk.png',hyperlink="https://cdosea.org/#video/i"){   
+function initSprite(amount=100, path='images/walk.png',hyperlink="https://cdosea.org/#video/i",xScl,yScl){   
     const map = new THREE.TextureLoader().load(path );
 	const material = new THREE.SpriteMaterial( { map: map, color: new THREE.Color("rgb(90, 90, 90)"), fog: true} );
 	for ( let a = 0; a < amount; a ++ ) {
@@ -196,8 +197,8 @@ function initSprite(amount=100, path='images/walk.png',hyperlink="https://cdosea
 		sprite.position.x = Math.random() * 400 -200;
         sprite.position.y = Math.random() * 400-200 ;
         sprite.position.z = Math.random()* 800 -400;
-        sprite.scale.x=16*3;
-        sprite.scale.y=9*3;
+        sprite.scale.x=xScl*3;
+        sprite.scale.y=yScl*3;
         sprite.link=hyperlink;
 		group.add( sprite );
 		}
@@ -298,9 +299,9 @@ function postprocess(){
     const renderScene = new RenderPass( scene, camera );
     const params = {
         exposure: 1,
-        bloomStrength: 1,
+        bloomStrength: 1.5,
         bloomThreshold: 0.,
-        bloomRadius: 0.5
+        bloomRadius: 0.2
     };
 	const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
 	bloomPass.threshold = params.bloomThreshold;
@@ -392,10 +393,10 @@ point.add(sound);
 
 
 function lights(){
-    light1 = new THREE.PointLight( new THREE.Color("rgb(255, 255, 255)"), 70, 5 );
+    light1 = new THREE.PointLight( new THREE.Color("rgb(255, 255, 255)"), 10, 13 );
 	scene.add( light1 );
 
-	light2 = new THREE.PointLight( new THREE.Color("rgb(255, 0, 0)"), 10, 10 );
+	light2 = new THREE.PointLight( new THREE.Color("rgb(255, 0, 0)"), 10, 7 );
 	scene.add( light2 );
 
 	light3 = new THREE.PointLight( new THREE.Color("rgb(255, 255, 255)"), 70, 5 );
@@ -404,7 +405,7 @@ function lights(){
     light4 = new THREE.PointLight( new THREE.Color("rgb(255, 0, 0)"), 20, 30 );
 	scene.add( light4 );
 
-    light5 = new THREE.SpotLight( new THREE.Color("rgb(255, 255, 255)"), 24, 20);
+    light5 = new THREE.SpotLight( new THREE.Color("rgb(255, 255, 255)"), 11, 20);
     light5.position.set(0,15,0);
 	scene.add( light5 );
 
