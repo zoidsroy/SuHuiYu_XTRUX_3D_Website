@@ -44,9 +44,11 @@ async function init() {
     initSprite(20,'images/walk.png',"https://cdosea.org/#video/i",16,9);
     initSprite(20,'images/tentacle.png','https://www.instagram.com/p/CsrPA3vp5cL/',16,9);
     initSprite(20,'images/crazy.png',"https://www.instagram.com/suhuiyu1976/",16,16);
-    initSprite(20,'images/still 001.png',"https://www.youtube.com/watch?v=JiHiUGf4AD8&t=2311s",16,9);
+    initSprite(20,'images/still 001.png',"https://www.youtube.com/watch?v=JiHiUGf4AD8&t=2311s",32,18);
     initSprite(20,'images/still 002.png',"https://www.instagram.com/suhuiyu1976/",16,9);
     initSprite(20,'images/XTRUX_Logo.png',"https://www.instagram.com/xtrux_official",12,12);
+    initSprite(20,'images/XTRUX_VIVIDO_Poster.png',"https://www.instagram.com/xtrux_official",18,24);
+
 	// camera
 	initCamera();
     //audio
