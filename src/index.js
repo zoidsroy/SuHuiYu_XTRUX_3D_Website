@@ -41,13 +41,21 @@ async function init() {
     initRaycaster();
     loadRenderer();	
 
-    initSprite(20,'images/walk.png',"https://cdosea.org/#video/i",16,9);
-    initSprite(20,'images/tentacle.png','https://www.instagram.com/p/CsrPA3vp5cL/',16,9);
-    initSprite(20,'images/crazy.png',"https://www.instagram.com/suhuiyu1976/",16,16);
-    initSprite(20,'images/still 001.png',"https://www.youtube.com/watch?v=JiHiUGf4AD8&t=2311s",32,18);
-    initSprite(20,'images/still 002.png',"https://www.instagram.com/suhuiyu1976/",16,9);
-    initSprite(20,'images/XTRUX_Logo.png',"https://www.instagram.com/xtrux_official",12,12);
-    initSprite(20,'images/XTRUX_VIVIDO_Poster.png',"https://www.instagram.com/xtrux_official",18,24);
+    initSprite(10,'images/walk.png',"https://www.youtube.com/watch?v=JiHiUGf4AD8",16,9);
+    initSprite(10,'images/tentacle.png','https://www.youtube.com/watch?v=M_xkym8DZnI',16,9);
+    initSprite(10,'images/crazy.png',"https://www.instagram.com/suhuiyu1976/",16,16);
+    initSprite(10,'images/still 001.png',"https://www.youtube.com/watch?v=WAJG2ZyR2_o",32,18);
+    initSprite(10,'images/still 002.png',"https://www.youtube.com/watch?v=Ew8EzP422-w&t=81s",16,9);
+    initSprite(10,'images/XTRUX_Logo.png',"https://www.instagram.com/xtrux_official",12,12);
+    initSprite(10,'images/XTRUX_VIVIDO_Poster.png',"https://www.instagram.com/p/Cs5UD5-POBH/",18,24);
+
+    initSprite(10,'images/walk.png',"https://www.youtube.com/watch?v=fnSiu8xZwYo",16,9);
+    initSprite(10,'images/tentacle.png','https://youtu.be/GuO53U7hEsQ',16,9);
+    initSprite(10,'images/crazy.png',"https://youtu.be/V9hWSic5EfI",16,16);
+    initSprite(10,'images/still 001.png',"https://youtu.be/8oLveZratSM",32,18);
+    initSprite(10,'images/still 002.png',"https://youtu.be/TnEppbi8QuQ",16,9);
+    initSprite(10,'images/XTRUX_Logo.png',"https://www.instagram.com/xtrux_official",12,12);
+    initSprite(10,'images/XTRUX_VIVIDO_Poster.png',"https://www.instagram.com/p/Cs5UD5-POBH/",18,24);
 
 	// camera
 	initCamera();
@@ -167,7 +175,7 @@ async function loadModel(){
     const models = [
         {
           gltf: "models/gltf/online.glb",
-          link: "https://www.instagram.com/xtrux_official",
+          link: "https://youtu.be/-WM-drhnOQg",
           position: [0, 0, 0],
           scale: 0.25,
           material: m
@@ -189,7 +197,7 @@ async function loadModel(){
 }
 
 
-function initSprite(amount=100, path='images/walk.png',hyperlink="https://cdosea.org/#video/i",xScl,yScl){   
+function initSprite(amount=100, path='images/walk.png',hyperlink="https://www.instagram.com/xtrux_official/",xScl,yScl){   
     const map = new THREE.TextureLoader().load(path );
 	const material = new THREE.SpriteMaterial( { map: map, color: new THREE.Color("rgb(90, 90, 90)"), fog: true} );
 	for ( let a = 0; a < amount; a ++ ) {
